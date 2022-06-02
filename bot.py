@@ -1,5 +1,6 @@
 # imports
 import socket
+import select
 from collections import namedtuple
 import json
 from channelStatus import channel_status
@@ -48,7 +49,8 @@ class Twitch:
                 print(channel, 'tady printuju channel')
                 print(channel_status(channel, config['api']['token'], config['api']['clientID']))
 
-                if channel_status(channel, config['api']['token'], config['api']['clientID']):  # checking if channel is live
+                if channel_status(channel, config['api']['token'], config['api']['clientID']):
+                    # checking if channel is live
                     print(f'{channel} channel je nazivo')
 
                     with open(status_cfg, 'r+') as status_file:     # opens status config file and load it
@@ -58,9 +60,11 @@ class Twitch:
                         for status in status_loaded['status']:      # iterating statuses
                             print(f'{status} tohle je aktualni status')
 
-                            if (status['channel'] == channel) and (not status['isConnected']):  # checking if acc is connected to channel chat
+                            if (status['channel'] == channel) and (not status['isConnected']):
+                                # checking if acc is connected to channel chat
                                 print(f'setuju true na channel {channel}')
-                                status['isConnected'] = True    # if is not connected, connect and write it into status config
+                                status['isConnected'] = True
+                                # if is not connected, connect and write it into status config
                                 status_file.seek(0)
                                 json.dump(status_loaded, status_file, indent=4)
                                 status_file.truncate()
@@ -68,9 +72,10 @@ class Twitch:
                                 print('posilam JOIN COMMAND')
                                 self.send_command(f'JOIN #{channel}')   # JOINS channel chat
                                 print(f'{self.username} joining to {channel}')
-                                self.send_privmsg(channel, 'Hey there!')    # TODO make random message when join + random message every 5-20mins
+                                self.send_privmsg(channel, 'Hey there!')
+                                # TODO make random message when join + random message every 5-20mins
 
-        self.loop_for_messages()    # 'MAIN' cycle for checking messages etc.
+        #self.loop_for_messages()    # 'MAIN' cycle for checking messages etc.
 
     # disconnect from channel chat
     def disconnect(self):
@@ -78,15 +83,18 @@ class Twitch:
             config = json.load(config_file)
 
             for channel in config['channels']:  # iterating channels in config file
-                if not channel_status(channel, config['api']['token'], config['api']['clientID']):  # checking if channel is offline
+                if not channel_status(channel, config['api']['token'], config['api']['clientID']):
+                    # checking if channel is offline
 
                     with open(status_cfg, 'r+') as status_file:     # if is offline open status config file
                         status_loaded = json.load(status_file)
 
                         for status in status_loaded['status']:  # iterate statuses in status config
 
-                            if (status['channel'] == channel) and (status['isConnected']):  # checking if acc is connected to channel chat
-                                status['isConnected'] = False   # if yes, disconnect and write it into status config file
+                            if (status['channel'] == channel) and (status['isConnected']):
+                                # checking if acc is connected to channel chat
+                                status['isConnected'] = False
+                                # if yes, disconnect and write it into status config file
                                 status_file.seek(0)
                                 json.dump(status_loaded, status_file, indent=4)
                                 status_file.truncate()
@@ -196,11 +204,16 @@ class Twitch:
 
     # main cycle, checking messages etc.
     def loop_for_messages(self):
-        while True:
-            received_msgs = self.irc.recv(2048).decode()
 
-            for received_msg in received_msgs.split('\r\n'):
-                self.handle_message(received_msg)
+        while True:
+            ready = select.select([self.irc], [], [], 3)
+
+            if ready[0]:
+                received_msgs = self.irc.recv(2048).decode()
+
+                for received_msg in received_msgs.split('\r\n'):
+                    self.handle_message(received_msg)
+
             self.disconnect()
             self.connect()
 
@@ -208,9 +221,9 @@ class Twitch:
 def main():
     acc = Twitch('oauth:', '')
     # testing
-    #acc.connect()
+    # acc.connect()
+    # acc.loop_for_messages()
     acc.force_disconnect()
-    #acc.disconnect()
     acc.close_socket()
 
 
