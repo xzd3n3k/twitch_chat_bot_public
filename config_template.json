@@ -1,0 +1,20 @@
+{
+  "api": {
+    "clientID": "",
+    "token": ""
+  },
+  "channels": [
+    "channel0",
+    "channel1"
+  ],
+  "accounts": [
+        {
+            "username": "",
+            "token": "oauth_token"
+        },
+        {
+            "username": "",
+            "token": "oauth_token"
+        }
+    ]
+}
