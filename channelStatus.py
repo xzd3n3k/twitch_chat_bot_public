@@ -20,7 +20,7 @@ def channel_status(channel, token, client_id):
 
         for acc in channel_info['data']:
 
-            if acc['display_name'] == channel:
+            if acc['display_name'].lower() == channel.lower():
                 return acc['is_live']
 
     return channel_status(channel, token, client_id)
