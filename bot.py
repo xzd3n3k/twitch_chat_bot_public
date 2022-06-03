@@ -37,7 +37,6 @@ class Twitch:
 
     # send command to irc
     def send_command(self, command):
-        print(f'< {command} poslal jsem command')
         self.irc.send((command + '\r\n').encode())
 
     # connect to channel chat
@@ -46,30 +45,23 @@ class Twitch:
             config = json.load(config_file)
 
             for channel in config['channels']:  # iterate all channels
-                print(channel, 'tady printuju channel')
-                print(channel_status(channel, config['api']['token'], config['api']['clientID']))
 
                 if channel_status(channel, config['api']['token'], config['api']['clientID']):
                     # checking if channel is live
-                    print(f'{channel} channel je nazivo')
 
                     with open(status_cfg, 'r+') as status_file:     # opens status config file and load it
-                        print('otevrel se status config')
                         status_loaded = json.load(status_file)
 
                         for status in status_loaded['status']:      # iterating statuses
-                            print(f'{status} tohle je aktualni status')
 
                             if (status['channel'] == channel) and (not status['isConnected']):
                                 # checking if acc is connected to channel chat
-                                print(f'setuju true na channel {channel}')
                                 status['isConnected'] = True
                                 # if is not connected, connect and write it into status config
                                 status_file.seek(0)
                                 json.dump(status_loaded, status_file, indent=4)
                                 status_file.truncate()
 
-                                print('posilam JOIN COMMAND')
                                 self.send_command(f'JOIN #{channel}')   # JOINS channel chat
                                 print(f'{self.username} joining to {channel}')
                                 self.send_privmsg(channel, 'Hey there!')
@@ -192,15 +184,14 @@ class Twitch:
         if len(received_msg) == 0:
             return
 
-        # print(f'> {received_msg}')
         message = self.parse_message(received_msg)
-        print(f'> {message} toto je prichozi zprava')
+        print(f'> {message}')
 
         if message.irc_command == 'PING':   # if twitch pings us we have to pong him
             self.send_command('PONG :tmi.twitch.tv')
 
-        if (message.text is not None) and ('kekw' in message.text):
-            self.send_privmsg(message.channel, 'kekw')
+        if (message.text is not None) and ('hi' in message.text):
+            self.send_privmsg(message.channel, 'hey')
 
     # main cycle, checking messages etc.
     def loop_for_messages(self):
