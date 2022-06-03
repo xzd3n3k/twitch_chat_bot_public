@@ -118,7 +118,9 @@ class Twitch:
 
     # closes socket
     def close_socket(self):
+        print('Closing socket...')
         self.irc.close()
+        print('Socket closed successfully.')
 
     # gets user from prefix (from twitch messages)
     def get_user_from_prefix(self, prefix):
@@ -190,14 +192,14 @@ class Twitch:
         if message.irc_command == 'PING':   # if twitch pings us we have to pong him
             self.send_command('PONG :tmi.twitch.tv')
 
-        if (message.text is not None) and ('hi' in message.text):
-            self.send_privmsg(message.channel, 'hey')
+        if (message.text is not None) and (message.channel is not None) and ('hi' in message.text):
+            self.send_privmsg(message.channel, message.text)
 
     # main cycle, checking messages etc.
     def loop_for_messages(self):
 
         while True:
-            ready = select.select([self.irc], [], [], 3)
+            ready = select.select([self.irc], [], [], 2)
 
             if ready[0]:
                 received_msgs = self.irc.recv(2048).decode()
@@ -208,14 +210,17 @@ class Twitch:
             self.disconnect()
             self.connect()
 
+    # def send_raw(self, string):
+    #     self.irc.send((string+'\r\n').encode('utf-8'))
+
 
 def main():
     acc = Twitch('oauth:', '')
     # testing
-    # acc.connect()
-    # acc.loop_for_messages()
-    acc.force_disconnect()
-    acc.close_socket()
+    acc.connect()
+    acc.loop_for_messages()
+    # acc.force_disconnect()
+    # acc.close_socket()
 
 
 if __name__ == '__main__':
