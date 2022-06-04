@@ -1,4 +1,5 @@
 # imports
+from random import randint
 import socket
 import select
 from collections import namedtuple
@@ -15,6 +16,35 @@ Message = namedtuple(
 status_cfg = 'status_config.json'
 cfg = 'test_config.json'
 
+channel_map = [
+    ["roshtein", [["yoo rosh", "hi", "hi rosh", "sup", "hello rosh", "good evening", "hi everyone"],
+                  ["roshCARROT", "PauseChamp", "PauseShake", "ROSHI", "roshDab", "AlienPls", "vibePls", "roshAbdul",
+                   "YEPJAM", "WIGGLE"]]],
+    ["ayezee", [["yoo zee", "hi", "hi zee", "sup", "hello zee", "good evening", "hi everyone"],
+                ["HeyZee", "Jammies", "scootsGIGAZEE", "ayezeeBYE", "scootsGREG", "Scoots", "pugPls", "ayezeePls",
+                 "TinfoilZeeRight", "ayezeeSCOOTS"]]],
+    ["casinodaddy", [["yoo daddy", "hi", "hi daddy", "sup", "hello daddy", "good evening", "hi everyone"],
+                     ["Kappa", "LUL", "PogChamp", "WutFace", "HeyGuys", "VoHiYo", "GlitchCat", "DxCat", "OSFrog"]]],
+    ["frankdimes", [["yoo frankie", "hi", "hi frankie", "sup", "hello frankie", "good evening", "hi everyone"],
+                    ["dimeBye", "Hmm", "PogChamp", "LUL", "VoHiYo", "WutFace", "Kappa", "GlitchCat", "DxCat",
+                     "OSFrog"]]],
+    ["deuceace", [["yoo deuce", "hi", "hi deuce", "sup", "hello deuce", "good evening", "hi everyone"],
+                  ["ShadyLulu", "twitchRaid", "MingLee", "LUL", "WutFace", "Kappa", "PogChamp", "DxCat", "OSFrog",
+                   "VoHiYo"]]],
+    ["vondice", [["yoo dice", "hi", "hi dice", "sup", "hello dice", "good evening", "hi everyone"],
+                 ["peepoSmash", "vonLEO", "LUL", "MingLee", "WutFace", "Kappa", "PogChamp", "DxCat", "GlitchCat",
+                  "VoHiYo"]]],
+    ["sweezy", [["yoo sweezy", "cau", "cau sweezy", "jakjee", "ahoj sweezy", "dobrej vecir", "cau lidi"],
+                ["pepeLaugh", "sweezyOop", "KEKW", "redyPiskoty", "catJAM", "restt2", "OMEGALUL", "resttOk",
+                 "resttM"]]],
+    ["watchgamestv", [["yoo ibby", "hi", "hi ibby", "sup", "hello ibby", "good evening", "hi everyone"],
+                      ["Kappa", "PogChamp", "WutFace", "dpgdkProdcess", "ayezeeGASM", "watchgChip", "SabaPing",
+                       "ShadyLulu", "DxCat"]]],
+    ["yassuo", [["yoo moe", "hi", "hi moe", "sup", "hello moe", "good evening", "hi everyone"],
+                ["Kappa", "PogChamp", "WutFace", "LUL", "VoHiYo", "DxCat", "ShadyLulu", "OSFrog", "peepoSmash",
+                 "pepeLaugh", "MingLee"]]]
+]
+
 
 class Twitch:
     # constructor
@@ -24,6 +54,7 @@ class Twitch:
         self.irc_port = 6667
         self.oauth = oauth
         self.username = username    # TODO make multiaccount - load users from config
+        self.chat_log = []  # TODO make it multichannel
 
         # connect to socket and authorize
         self.irc = socket.socket()
@@ -38,6 +69,23 @@ class Twitch:
     # send command to irc
     def send_command(self, command):
         self.irc.send((command + '\r\n').encode())
+
+    def greeting(self, channel_name):
+        emoji = randint(0, 1)
+        for acc in channel_map:
+
+            if acc[0] == channel_name:
+                message_index = randint(1, len(channel_map[1][0]))
+                message = acc[1][0][message_index]
+
+                if emoji == 1:
+                    emoji_index = randint(1, len(channel_map[1][1]))
+                    message += ' '
+                    message += acc[1][1][emoji_index]
+
+                return message
+
+        return 'Hello there Kappa'
 
     # connect to channel chat
     def connect(self):
@@ -64,10 +112,8 @@ class Twitch:
 
                                 self.send_command(f'JOIN #{channel}')   # JOINS channel chat
                                 print(f'{self.username} joining to {channel}')
-                                self.send_privmsg(channel, 'Hey there!')
-                                # TODO make random message when join + random message every 5-20mins
-
-        #self.loop_for_messages()    # 'MAIN' cycle for checking messages etc.
+                                self.send_privmsg(channel, self.greeting(channel))
+                                # TODO make random message every 5-20mins
 
     # disconnect from channel chat
     def disconnect(self):
@@ -192,12 +238,18 @@ class Twitch:
         if message.irc_command == 'PING':   # if twitch pings us we have to pong him
             self.send_command('PONG :tmi.twitch.tv')
 
-        if (message.text is not None) and (message.channel is not None) and ('hi' in message.text):
-            self.send_privmsg(message.channel, message.text)
+        if (message.text is not None) and (message.channel is not None) and (message.text[0] not in '!._/-?'):
+            if len(self.chat_log) >= 3:
+
+                if self.chat_log[0] in self.chat_log[1] and self.chat_log[0] in self.chat_log[2]:
+                    self.send_privmsg(message.channel, self.chat_log[0])
+
+                self.chat_log.pop(0)
+
+            self.chat_log.append(message.text.lower())
 
     # main cycle, checking messages etc.
     def loop_for_messages(self):
-
         while True:
             ready = select.select([self.irc], [], [], 2)
 
