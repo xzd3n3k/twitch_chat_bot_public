@@ -85,7 +85,8 @@ class Twitch:
 
                 return message
 
-        return 'Hello there Kappa'
+        backup = ['Hello there Kappa', 'Hi', 'Hey LUL', 'Wasup DxCat', 'hehey', 'hello', 'im Here pepeLaugh', 'such a nice day OSFrog']
+        return backup[randint(1, len(backup))]
 
     # connect to channel chat
     def connect(self):
