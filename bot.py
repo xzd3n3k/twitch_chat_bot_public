@@ -262,6 +262,3 @@ class Twitch:
 
             self.disconnect()
             self.connect()
-
-    # def send_raw(self, string):
-    #     self.irc.send((string+'\r\n').encode('utf-8'))
