@@ -112,18 +112,18 @@ class Twitch:
         for acc in self.channel_map:
 
             if acc[0] == channel_name:
-                message_index = randint(1, len(self.channel_map[1][0]))
+                message_index = randint(1, len(self.channel_map[1][0])-1)
                 message = acc[1][0][message_index]
 
                 if emoji == 1:
-                    emoji_index = randint(1, len(self.channel_map[1][1]))
+                    emoji_index = randint(1, len(self.channel_map[1][1])-1)
                     message += ' '
                     message += acc[1][1][emoji_index]
 
                 return message
 
         backup = ['Hello there Kappa', 'Hi', 'Hey LUL', 'Wasup DxCat', 'hehey', 'hello', 'im Here pepeLaugh', 'such a nice day OSFrog']
-        return backup[randint(1, len(backup))]
+        return backup[randint(1, len(backup)-1)]
 
     # connect to channel chat
     def connect(self):
@@ -279,7 +279,7 @@ class Twitch:
         if (message.text is not None) and (message.channel is not None) and (message.text[0] not in '!._/-?'):
             if len(self.chat_log) >= 3:
 
-                if self.chat_log[0].lower() in self.chat_log[1].lower and self.chat_log[0].lower() in self.chat_log[2].lower():
+                if self.chat_log[0].lower() in self.chat_log[1].lower() and self.chat_log[0].lower() in self.chat_log[2].lower():
                     self.send_privmsg(message.channel, self.chat_log[0])
 
                 self.chat_log.pop(0)
@@ -292,7 +292,10 @@ class Twitch:
             ready = select.select([self.irc], [], [], 2)
 
             if ready[0]:
-                received_msgs = self.irc.recv(2048).decode()
+                try:
+                    received_msgs = self.irc.recv(2048).decode()
+                except ConnectionResetError or BrokenPipeError or ConnectionError:
+                    return
 
                 for received_msg in received_msgs.split('\r\n'):
                     self.handle_message(received_msg)
