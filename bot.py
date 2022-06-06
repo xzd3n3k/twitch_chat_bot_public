@@ -13,55 +13,92 @@ Message = namedtuple(
 )
 
 # configs
-status_cfg = 'status_config.json'
-cfg = 'test_config.json'
+# status_cfg = 'status_config.json'
+# cfg = 'test_config.json'
 
-channel_map = [
-    ["roshtein", [["yoo rosh", "hi", "hi rosh", "sup", "hello rosh", "good evening", "hi everyone"],
-                  ["roshCARROT", "PauseChamp", "PauseShake", "ROSHI", "roshDab", "AlienPls", "vibePls", "roshAbdul",
-                   "YEPJAM", "WIGGLE"]]],
-    ["ayezee", [["yoo zee", "hi", "hi zee", "sup", "hello zee", "good evening", "hi everyone"],
-                ["HeyZee", "Jammies", "scootsGIGAZEE", "ayezeeBYE", "scootsGREG", "Scoots", "pugPls", "ayezeePls",
-                 "TinfoilZeeRight", "ayezeeSCOOTS"]]],
-    ["casinodaddy", [["yoo daddy", "hi", "hi daddy", "sup", "hello daddy", "good evening", "hi everyone"],
-                     ["Kappa", "LUL", "PogChamp", "WutFace", "HeyGuys", "VoHiYo", "GlitchCat", "DxCat", "OSFrog"]]],
-    ["frankdimes", [["yoo frankie", "hi", "hi frankie", "sup", "hello frankie", "good evening", "hi everyone"],
-                    ["dimeBye", "Hmm", "PogChamp", "LUL", "VoHiYo", "WutFace", "Kappa", "GlitchCat", "DxCat",
-                     "OSFrog"]]],
-    ["deuceace", [["yoo deuce", "hi", "hi deuce", "sup", "hello deuce", "good evening", "hi everyone"],
-                  ["ShadyLulu", "twitchRaid", "MingLee", "LUL", "WutFace", "Kappa", "PogChamp", "DxCat", "OSFrog",
-                   "VoHiYo"]]],
-    ["vondice", [["yoo dice", "hi", "hi dice", "sup", "hello dice", "good evening", "hi everyone"],
-                 ["peepoSmash", "vonLEO", "LUL", "MingLee", "WutFace", "Kappa", "PogChamp", "DxCat", "GlitchCat",
-                  "VoHiYo"]]],
-    ["sweezy", [["yoo sweezy", "cau", "cau sweezy", "jakjee", "ahoj sweezy", "dobrej vecir", "cau lidi"],
-                ["pepeLaugh", "sweezyOop", "KEKW", "redyPiskoty", "catJAM", "restt2", "OMEGALUL", "resttOk",
-                 "resttM"]]],
-    ["watchgamestv", [["yoo ibby", "hi", "hi ibby", "sup", "hello ibby", "good evening", "hi everyone"],
-                      ["Kappa", "PogChamp", "WutFace", "dpgdkProdcess", "ayezeeGASM", "watchgChip", "SabaPing",
-                       "ShadyLulu", "DxCat"]]],
-    ["yassuo", [["yoo moe", "hi", "hi moe", "sup", "hello moe", "good evening", "hi everyone"],
-                ["Kappa", "PogChamp", "WutFace", "LUL", "VoHiYo", "DxCat", "ShadyLulu", "OSFrog", "peepoSmash",
-                 "pepeLaugh", "MingLee"]]]
-]
+# channel_map = [
+#     ["roshtein", [["yoo rosh", "hi", "hi rosh", "sup", "hello rosh", "good evening", "hi everyone"],
+#                   ["roshCARROT", "PauseChamp", "PauseShake", "ROSHI", "roshDab", "AlienPls", "vibePls", "roshAbdul",
+#                    "YEPJAM", "WIGGLE"]]],
+#     ["ayezee", [["yoo zee", "hi", "hi zee", "sup", "hello zee", "good evening", "hi everyone"],
+#                 ["HeyZee", "Jammies", "scootsGIGAZEE", "ayezeeBYE", "scootsGREG", "Scoots", "pugPls", "ayezeePls",
+#                  "TinfoilZeeRight", "ayezeeSCOOTS"]]],
+#     ["casinodaddy", [["yoo daddy", "hi", "hi daddy", "sup", "hello daddy", "good evening", "hi everyone"],
+#                      ["Kappa", "LUL", "PogChamp", "WutFace", "HeyGuys", "VoHiYo", "GlitchCat", "DxCat", "OSFrog"]]],
+#     ["frankdimes", [["yoo frankie", "hi", "hi frankie", "sup", "hello frankie", "good evening", "hi everyone"],
+#                     ["dimeBye", "Hmm", "PogChamp", "LUL", "VoHiYo", "WutFace", "Kappa", "GlitchCat", "DxCat",
+#                      "OSFrog"]]],
+#     ["deuceace", [["yoo deuce", "hi", "hi deuce", "sup", "hello deuce", "good evening", "hi everyone"],
+#                   ["ShadyLulu", "twitchRaid", "MingLee", "LUL", "WutFace", "Kappa", "PogChamp", "DxCat", "OSFrog",
+#                    "VoHiYo"]]],
+#     ["vondice", [["yoo dice", "hi", "hi dice", "sup", "hello dice", "good evening", "hi everyone"],
+#                  ["peepoSmash", "vonLEO", "LUL", "MingLee", "WutFace", "Kappa", "PogChamp", "DxCat", "GlitchCat",
+#                   "VoHiYo"]]],
+#     ["sweezy", [["yoo sweezy", "cau", "cau sweezy", "jakjee", "ahoj sweezy", "dobrej vecir", "cau lidi"],
+#                 ["pepeLaugh", "sweezyOop", "KEKW", "redyPiskoty", "catJAM", "restt2", "OMEGALUL", "resttOk",
+#                  "resttM"]]],
+#     ["watchgamestv", [["yoo ibby", "hi", "hi ibby", "sup", "hello ibby", "good evening", "hi everyone"],
+#                       ["Kappa", "PogChamp", "WutFace", "dpgdkProdcess", "ayezeeGASM", "watchgChip", "SabaPing",
+#                        "ShadyLulu", "DxCat"]]],
+#     ["yassuo", [["yoo moe", "hi", "hi moe", "sup", "hello moe", "good evening", "hi everyone"],
+#                 ["Kappa", "PogChamp", "WutFace", "LUL", "VoHiYo", "DxCat", "ShadyLulu", "OSFrog", "peepoSmash",
+#                  "pepeLaugh", "MingLee"]]]
+# ]
 
 
 class Twitch:
     # constructor
-    def __init__(self, oauth, username):
-        self.irc = None
+    def __init__(self, oauth, username, cfg='test_config.json', status_cfg='status_config.json'):
+        # self.irc = None
         self.irc_server = 'irc.twitch.tv'
         self.irc_port = 6667
         self.oauth = oauth
         self.username = username    # TODO make multiaccount - load users from config
         self.chat_log = []  # TODO make it multichannel
-
+        self.cfg = cfg
+        self.status_cfg = status_cfg
+        
         # connect to socket and authorize
         self.irc = socket.socket()
         self.irc.connect((self.irc_server, self.irc_port))
         self.send_command(f'PASS {self.oauth}')
         self.send_command(f'NICK {self.username}')
-
+        
+        # map
+        self.channel_map = [
+            ["roshtein", [["yoo rosh", "hi", "hi rosh", "sup", "hello rosh", "good evening", "hi everyone"],
+                          ["roshCARROT", "PauseChamp", "PauseShake", "ROSHI", "roshDab", "AlienPls", "vibePls",
+                           "roshAbdul",
+                           "YEPJAM", "WIGGLE"]]],
+            ["ayezee", [["yoo zee", "hi", "hi zee", "sup", "hello zee", "good evening", "hi everyone"],
+                        ["HeyZee", "Jammies", "scootsGIGAZEE", "ayezeeBYE", "scootsGREG", "Scoots", "pugPls",
+                         "ayezeePls",
+                         "TinfoilZeeRight", "ayezeeSCOOTS"]]],
+            ["casinodaddy", [["yoo daddy", "hi", "hi daddy", "sup", "hello daddy", "good evening", "hi everyone"],
+                             ["Kappa", "LUL", "PogChamp", "WutFace", "HeyGuys", "VoHiYo", "GlitchCat", "DxCat",
+                              "OSFrog"]]],
+            ["frankdimes", [["yoo frankie", "hi", "hi frankie", "sup", "hello frankie", "good evening", "hi everyone"],
+                            ["dimeBye", "Hmm", "PogChamp", "LUL", "VoHiYo", "WutFace", "Kappa", "GlitchCat", "DxCat",
+                             "OSFrog"]]],
+            ["deuceace", [["yoo deuce", "hi", "hi deuce", "sup", "hello deuce", "good evening", "hi everyone"],
+                          ["ShadyLulu", "twitchRaid", "MingLee", "LUL", "WutFace", "Kappa", "PogChamp", "DxCat",
+                           "OSFrog",
+                           "VoHiYo"]]],
+            ["vondice", [["yoo dice", "hi", "hi dice", "sup", "hello dice", "good evening", "hi everyone"],
+                         ["peepoSmash", "vonLEO", "LUL", "MingLee", "WutFace", "Kappa", "PogChamp", "DxCat",
+                          "GlitchCat",
+                          "VoHiYo"]]],
+            ["sweezy", [["yoo sweezy", "cau", "cau sweezy", "jakjee", "ahoj sweezy", "dobrej vecir", "cau lidi"],
+                        ["pepeLaugh", "sweezyOop", "KEKW", "redyPiskoty", "catJAM", "restt2", "OMEGALUL", "resttOk",
+                         "resttM"]]],
+            ["watchgamestv", [["yoo ibby", "hi", "hi ibby", "sup", "hello ibby", "good evening", "hi everyone"],
+                              ["Kappa", "PogChamp", "WutFace", "dpgdkProdcess", "ayezeeGASM", "watchgChip", "SabaPing",
+                               "ShadyLulu", "DxCat"]]],
+            ["yassuo", [["yoo moe", "hi", "hi moe", "sup", "hello moe", "good evening", "hi everyone"],
+                        ["Kappa", "PogChamp", "WutFace", "LUL", "VoHiYo", "DxCat", "ShadyLulu", "OSFrog", "peepoSmash",
+                         "pepeLaugh", "MingLee"]]]
+        ]
+        
     # sends message to channel chat
     def send_privmsg(self, channel, message):
         self.send_command(f'PRIVMSG #{channel} :{message}')
@@ -72,14 +109,14 @@ class Twitch:
 
     def greeting(self, channel_name):
         emoji = randint(0, 1)
-        for acc in channel_map:
+        for acc in self.channel_map:
 
             if acc[0] == channel_name:
-                message_index = randint(1, len(channel_map[1][0]))
+                message_index = randint(1, len(self.channel_map[1][0]))
                 message = acc[1][0][message_index]
 
                 if emoji == 1:
-                    emoji_index = randint(1, len(channel_map[1][1]))
+                    emoji_index = randint(1, len(self.channel_map[1][1]))
                     message += ' '
                     message += acc[1][1][emoji_index]
 
@@ -90,7 +127,7 @@ class Twitch:
 
     # connect to channel chat
     def connect(self):
-        with open(cfg) as config_file:  # opens config file
+        with open(self.cfg) as config_file:  # opens config file
             config = json.load(config_file)
 
             for channel in config['channels']:  # iterate all channels
@@ -98,7 +135,7 @@ class Twitch:
                 if channel_status(channel, config['api']['token'], config['api']['clientID']):
                     # checking if channel is live
 
-                    with open(status_cfg, 'r+') as status_file:     # opens status config file and load it
+                    with open(self.status_cfg, 'r+') as status_file:     # opens status config file and load it
                         status_loaded = json.load(status_file)
 
                         for status in status_loaded['status']:      # iterating statuses
@@ -118,14 +155,14 @@ class Twitch:
 
     # disconnect from channel chat
     def disconnect(self):
-        with open(cfg) as config_file:  # opens config file
+        with open(self.cfg) as config_file:  # opens config file
             config = json.load(config_file)
 
             for channel in config['channels']:  # iterating channels in config file
                 if not channel_status(channel, config['api']['token'], config['api']['clientID']):
                     # checking if channel is offline
 
-                    with open(status_cfg, 'r+') as status_file:     # if is offline open status config file
+                    with open(self.status_cfg, 'r+') as status_file:     # if is offline open status config file
                         status_loaded = json.load(status_file)
 
                         for status in status_loaded['status']:  # iterate statuses in status config
@@ -144,12 +181,12 @@ class Twitch:
     # disconnect method which force acc to disconnect from channel neither its online or not
     # same as disconnect but does not check for offline status
     def force_disconnect(self):
-        with open(cfg) as config_file:
+        with open(self.cfg) as config_file:
             config = json.load(config_file)
 
             for channel in config['channels']:
 
-                with open(status_cfg, 'r+') as status_file:
+                with open(self.status_cfg, 'r+') as status_file:
                     status_loaded = json.load(status_file)
 
                     for status in status_loaded['status']:
@@ -242,12 +279,12 @@ class Twitch:
         if (message.text is not None) and (message.channel is not None) and (message.text[0] not in '!._/-?'):
             if len(self.chat_log) >= 3:
 
-                if self.chat_log[0] in self.chat_log[1] and self.chat_log[0] in self.chat_log[2]:
+                if self.chat_log[0].lower() in self.chat_log[1].lower and self.chat_log[0].lower() in self.chat_log[2].lower():
                     self.send_privmsg(message.channel, self.chat_log[0])
 
                 self.chat_log.pop(0)
 
-            self.chat_log.append(message.text.lower())
+            self.chat_log.append(message.text)
 
     # main cycle, checking messages etc.
     def loop_for_messages(self):
