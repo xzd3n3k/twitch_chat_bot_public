@@ -1,5 +1,15 @@
 {
-    "status": [
+    "user": [
+        {
+            "channel": "",
+            "isConnected": false
+        },
+        {
+            "channel": "",
+            "isConnected": false
+        }
+    ],
+    "another_user": [
         {
             "channel": "",
             "isConnected": false
