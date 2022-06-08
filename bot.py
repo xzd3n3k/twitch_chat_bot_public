@@ -1,4 +1,5 @@
 # imports
+import time
 from random import randint
 import socket
 import select
@@ -119,7 +120,7 @@ class Twitch:
                     with open(self.status_cfg, 'r+') as status_file:     # opens status config file and load it
                         status_loaded = json.load(status_file)
 
-                        for status in status_loaded['status']:      # iterating statuses
+                        for status in status_loaded[self.username]:      # iterating statuses
 
                             if (status['channel'] == channel) and (not status['isConnected']):
                                 # checking if acc is connected to channel chat
@@ -131,6 +132,9 @@ class Twitch:
 
                                 self.send_command(f'JOIN #{channel}')   # JOINS channel chat
                                 print(f'{self.username} joining to {channel}')
+
+                                cooldown = randint(0, 5)
+                                time.sleep(cooldown)
                                 self.send_privmsg(channel, self.greeting(channel))
                                 # TODO make random message every 5-20mins
 
@@ -146,7 +150,7 @@ class Twitch:
                     with open(self.status_cfg, 'r+') as status_file:     # if is offline open status config file
                         status_loaded = json.load(status_file)
 
-                        for status in status_loaded['status']:  # iterate statuses in status config
+                        for status in status_loaded[self.username]:  # iterate statuses in status config
 
                             if (status['channel'] == channel) and (status['isConnected']):
                                 # checking if acc is connected to channel chat
@@ -170,7 +174,7 @@ class Twitch:
                 with open(self.status_cfg, 'r+') as status_file:
                     status_loaded = json.load(status_file)
 
-                    for status in status_loaded['status']:
+                    for status in status_loaded[self.username]:
 
                         if (status['channel'] == channel) and (status['isConnected']):
                             status['isConnected'] = False
@@ -252,7 +256,10 @@ class Twitch:
             return
 
         message = self.parse_message(received_msg)
-        print(f'> {message}')
+        # print(f'> {message}')
+
+        if message.irc_command == '001':
+            print(f'Watcher {self.username} connected')
 
         if message.irc_command == 'PING':   # if twitch pings us we have to pong him
             self.send_command('PONG :tmi.twitch.tv')
