@@ -22,7 +22,7 @@ class Twitch:
         self.irc_server = 'irc.twitch.tv'
         self.irc_port = 6667
         self.oauth = oauth
-        self.username = username    # TODO make multiaccount - load users from config
+        self.username = username
         self.cfg = cfg
         self.status_cfg = status_cfg
         self.loggers = []
