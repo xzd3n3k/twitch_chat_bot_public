@@ -1,12 +1,26 @@
+import json
 from bot import Twitch
 
 
 def main():
-    acc = Twitch('oauth:', '')
-    acc.connect()
-    acc.loop_for_messages()
-    # acc.force_disconnect()
-    # acc.close_socket()
+    accounts = []
+
+    with open('config.json', 'r') as config:
+        loaded_cfg = json.load(config)
+        for acc in loaded_cfg['accounts']:
+            accounts.append(Twitch(acc['token'], acc['username']))
+
+    for account in accounts:
+        account.connect()
+
+    while True:
+        for bot in accounts:
+            bot.loop_for_messages()
+
+    # for bot in accounts:
+    #     bot.force_disconnect()
+    #     bot.close_socket()
+# TODO make method to generate and edit status_config
 
 
 if __name__ == '__main__':
