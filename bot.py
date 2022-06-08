@@ -17,7 +17,7 @@ Message = namedtuple(
 
 class Twitch:
     # constructor
-    def __init__(self, oauth, username, cfg='test_config.json', status_cfg='status_config.json'):
+    def __init__(self, oauth, username, cfg='config.json', status_cfg='status_config.json'):
         # self.irc = None
         self.irc_server = 'irc.twitch.tv'
         self.irc_port = 6667
