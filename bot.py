@@ -5,45 +5,13 @@ import select
 from collections import namedtuple
 import json
 from channelStatus import channel_status
+from chatLog import ChatLog
 
 # Message declaration
 Message = namedtuple(
     'Message',
     'prefix user channel irc_command irc_args text'
 )
-
-# configs
-# status_cfg = 'status_config.json'
-# cfg = 'test_config.json'
-
-# channel_map = [
-#     ["roshtein", [["yoo rosh", "hi", "hi rosh", "sup", "hello rosh", "good evening", "hi everyone"],
-#                   ["roshCARROT", "PauseChamp", "PauseShake", "ROSHI", "roshDab", "AlienPls", "vibePls", "roshAbdul",
-#                    "YEPJAM", "WIGGLE"]]],
-#     ["ayezee", [["yoo zee", "hi", "hi zee", "sup", "hello zee", "good evening", "hi everyone"],
-#                 ["HeyZee", "Jammies", "scootsGIGAZEE", "ayezeeBYE", "scootsGREG", "Scoots", "pugPls", "ayezeePls",
-#                  "TinfoilZeeRight", "ayezeeSCOOTS"]]],
-#     ["casinodaddy", [["yoo daddy", "hi", "hi daddy", "sup", "hello daddy", "good evening", "hi everyone"],
-#                      ["Kappa", "LUL", "PogChamp", "WutFace", "HeyGuys", "VoHiYo", "GlitchCat", "DxCat", "OSFrog"]]],
-#     ["frankdimes", [["yoo frankie", "hi", "hi frankie", "sup", "hello frankie", "good evening", "hi everyone"],
-#                     ["dimeBye", "Hmm", "PogChamp", "LUL", "VoHiYo", "WutFace", "Kappa", "GlitchCat", "DxCat",
-#                      "OSFrog"]]],
-#     ["deuceace", [["yoo deuce", "hi", "hi deuce", "sup", "hello deuce", "good evening", "hi everyone"],
-#                   ["ShadyLulu", "twitchRaid", "MingLee", "LUL", "WutFace", "Kappa", "PogChamp", "DxCat", "OSFrog",
-#                    "VoHiYo"]]],
-#     ["vondice", [["yoo dice", "hi", "hi dice", "sup", "hello dice", "good evening", "hi everyone"],
-#                  ["peepoSmash", "vonLEO", "LUL", "MingLee", "WutFace", "Kappa", "PogChamp", "DxCat", "GlitchCat",
-#                   "VoHiYo"]]],
-#     ["sweezy", [["yoo sweezy", "cau", "cau sweezy", "jakjee", "ahoj sweezy", "dobrej vecir", "cau lidi"],
-#                 ["pepeLaugh", "sweezyOop", "KEKW", "redyPiskoty", "catJAM", "restt2", "OMEGALUL", "resttOk",
-#                  "resttM"]]],
-#     ["watchgamestv", [["yoo ibby", "hi", "hi ibby", "sup", "hello ibby", "good evening", "hi everyone"],
-#                       ["Kappa", "PogChamp", "WutFace", "dpgdkProdcess", "ayezeeGASM", "watchgChip", "SabaPing",
-#                        "ShadyLulu", "DxCat"]]],
-#     ["yassuo", [["yoo moe", "hi", "hi moe", "sup", "hello moe", "good evening", "hi everyone"],
-#                 ["Kappa", "PogChamp", "WutFace", "LUL", "VoHiYo", "DxCat", "ShadyLulu", "OSFrog", "peepoSmash",
-#                  "pepeLaugh", "MingLee"]]]
-# ]
 
 
 class Twitch:
@@ -54,9 +22,16 @@ class Twitch:
         self.irc_port = 6667
         self.oauth = oauth
         self.username = username    # TODO make multiaccount - load users from config
-        self.chat_log = []  # TODO make it multichannel
         self.cfg = cfg
         self.status_cfg = status_cfg
+        self.loggers = []
+
+        # opens config iterates channels and make chatLog instance for each channel
+        with open('config.json', 'r') as configLog:
+            data = json.load(configLog)
+
+            for channel in data['channels']:
+                self.loggers.append(ChatLog(channel))
         
         # connect to socket and authorize
         self.irc = socket.socket()
@@ -64,7 +39,7 @@ class Twitch:
         self.send_command(f'PASS {self.oauth}')
         self.send_command(f'NICK {self.username}')
         
-        # map
+        # greeting map
         self.channel_map = [
             ["roshtein", [["yoo rosh", "hi", "hi rosh", "sup", "hello rosh", "good evening", "hi everyone"],
                           ["roshCARROT", "PauseChamp", "PauseShake", "ROSHI", "roshDab", "AlienPls", "vibePls",
@@ -105,24 +80,30 @@ class Twitch:
 
     # send command to irc
     def send_command(self, command):
-        self.irc.send((command + '\r\n').encode())
+        try:
+            self.irc.send((command + '\r\n').encode())
+        except BrokenPipeError or ConnectionError or ConnectionResetError:
+            self.irc.send((command + '\r\n').encode())
 
+    # function which generate greeting and emoji
     def greeting(self, channel_name):
-        emoji = randint(0, 1)
-        for acc in self.channel_map:
+        emoji = randint(0, 1)   # var telling if we will get emoji or not
 
-            if acc[0] == channel_name:
-                message_index = randint(1, len(self.channel_map[1][0])-1)
-                message = acc[1][0][message_index]
+        for acc in self.channel_map:    # iterating channels in map
 
-                if emoji == 1:
-                    emoji_index = randint(1, len(self.channel_map[1][1])-1)
-                    message += ' '
-                    message += acc[1][1][emoji_index]
+            if acc[0] == channel_name:  # if channel is found
+                message_index = randint(1, len(self.channel_map[1][0])-1)   # generate index of greeting
+                message = acc[1][0][message_index]  # save greeting into variable
+
+                if emoji == 1:  # if emoji is going to be generated
+                    emoji_index = randint(1, len(self.channel_map[1][1])-1)     # generate index of emoji
+                    message += ' '  # add space between text and emoji
+                    message += acc[1][1][emoji_index]   # generate and add emoji
 
                 return message
 
-        backup = ['Hello there Kappa', 'Hi', 'Hey LUL', 'Wasup DxCat', 'hehey', 'hello', 'im Here pepeLaugh', 'such a nice day OSFrog']
+        # if channel does not have any map, use these preset greetings
+        backup = ['Hello there Kappa', 'Hi', 'Hey LUL', 'Wasup DxCat', 'hehey', 'hello', 'im Here pepeLaugh', 'such a nice day OSFrog', 'Hey there', 'sup guys SoonerLater']
         return backup[randint(1, len(backup)-1)]
 
     # connect to channel chat
@@ -277,28 +258,28 @@ class Twitch:
             self.send_command('PONG :tmi.twitch.tv')
 
         if (message.text is not None) and (message.channel is not None) and (message.text[0] not in '!._/-?'):
-            if len(self.chat_log) >= 3:
 
-                if self.chat_log[0].lower() in self.chat_log[1].lower() and self.chat_log[0].lower() in self.chat_log[2].lower():
-                    self.send_privmsg(message.channel, self.chat_log[0])
+            for logger in self.loggers:
 
-                self.chat_log.pop(0)
+                if logger.channel == message.channel:
+                    logger_load = logger.add_message(message.text)
 
-            self.chat_log.append(message.text)
+                    if logger_load is not None:
+                        self.send_privmsg(logger_load[0], logger_load[1])
 
     # main cycle, checking messages etc.
     def loop_for_messages(self):
-        while True:
-            ready = select.select([self.irc], [], [], 2)
+        # while True:
+        ready = select.select([self.irc], [], [], 2)
 
-            if ready[0]:
-                try:
-                    received_msgs = self.irc.recv(2048).decode()
-                except ConnectionResetError or BrokenPipeError or ConnectionError:
-                    return
+        if ready[0]:
+            try:
+                received_msgs = self.irc.recv(2048).decode()
+            except ConnectionResetError or BrokenPipeError or ConnectionError:
+                return
 
-                for received_msg in received_msgs.split('\r\n'):
-                    self.handle_message(received_msg)
+            for received_msg in received_msgs.split('\r\n'):
+                self.handle_message(received_msg)
 
-            self.disconnect()
-            self.connect()
+        self.disconnect()
+        self.connect()
