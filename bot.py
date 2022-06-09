@@ -17,7 +17,7 @@ Message = namedtuple(
 
 class Twitch:
     # constructor
-    def __init__(self, oauth, username, cfg='config.json', status_cfg='status_config.json'):
+    def __init__(self, oauth, username, cfg='config_test.json', status_cfg='status_config_test.json'):
         # self.irc = None
         self.irc_server = 'irc.twitch.tv'
         self.irc_port = 6667
@@ -260,6 +260,9 @@ class Twitch:
 
         if message.irc_command == '001':
             print(f'Watcher {self.username} connected')
+
+        if message.irc_command == 'NOTICE':
+            print(f'For {self.username} from {message.channel} - {message}')
 
         if message.irc_command == 'PING':   # if twitch pings us we have to pong him
             self.send_command('PONG :tmi.twitch.tv')
