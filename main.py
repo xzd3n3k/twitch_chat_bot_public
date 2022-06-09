@@ -13,13 +13,15 @@ def main():
     for account in accounts:
         account.connect()
 
-    while True:
-        for bot in accounts:
-            bot.loop_for_messages()
+    try:
+        while True:
+            for bot in accounts:
+                bot.loop_for_messages()
 
-    # for bot in accounts:
-    #     bot.force_disconnect()
-    #     bot.close_socket()
+    except KeyboardInterrupt:
+        for bot in accounts:
+            bot.force_disconnect()
+            bot.close_socket()
 # TODO make method to generate and edit status_config
 
 
