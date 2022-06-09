@@ -28,7 +28,7 @@ class Twitch:
         self.loggers = []
 
         # opens config iterates channels and make chatLog instance for each channel
-        with open('config.json', 'r') as configLog:
+        with open(self.cfg, 'r') as configLog:
             data = json.load(configLog)
 
             for channel in data['channels']:
