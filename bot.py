@@ -17,7 +17,7 @@ Message = namedtuple(
 
 class Twitch:
     # constructor
-    def __init__(self, oauth, username, cfg='config_test.json', status_cfg='status_config_test.json'):
+    def __init__(self, oauth, username, cfg='config.json', status_cfg='status_config.json'):
         # self.irc = None
         self.irc_server = 'irc.twitch.tv'
         self.irc_port = 6667
@@ -84,7 +84,7 @@ class Twitch:
         try:
             self.irc.send((command + '\r\n').encode())
         except BrokenPipeError or ConnectionError or ConnectionResetError:
-            self.irc.send((command + '\r\n').encode())
+            self.send_command(command)
 
     # function which generate greeting and emoji
     def greeting(self, channel_name):
@@ -228,8 +228,9 @@ class Twitch:
             text = ' '.join(text_parts)
             parts = parts[:text_start]
 
-        irc_command = parts[0]
-        irc_args = parts[1:]
+        if len(parts) != 0:
+            irc_command = parts[0]
+            irc_args = parts[1:]
 
         hash_start = next(
             (idx for idx, part in enumerate(irc_args) if part.startswith('#')),
