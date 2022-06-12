@@ -232,10 +232,13 @@ class Twitch:
             irc_command = parts[0]
             irc_args = parts[1:]
 
-        hash_start = next(
-            (idx for idx, part in enumerate(irc_args) if part.startswith('#')),
-            None
-        )
+            hash_start = next(
+                (idx for idx, part in enumerate(irc_args) if part.startswith('#')),
+                None
+            )
+
+        else:
+            hash_start = None
 
         if hash_start is not None:
             channel = irc_args[hash_start][1:]
@@ -262,13 +265,13 @@ class Twitch:
         if message.irc_command == '001':
             print(f'Watcher {self.username} connected')
 
-        if message.irc_command == 'NOTICE':
+        elif message.irc_command == 'NOTICE':
             print(f'For {self.username} from {message.channel} - {message}')
 
-        if message.irc_command == 'PING':   # if twitch pings us we have to pong him
+        elif message.irc_command == 'PING':   # if twitch pings us we have to pong him
             self.send_command('PONG :tmi.twitch.tv')
 
-        if (message.text is not None) and (message.channel is not None) and (message.text[0] not in '!._/-?'):
+        elif (message.text is not None) and (message.channel is not None) and (message.text[0] not in '!._/-?'):
 
             for logger in self.loggers:
 
